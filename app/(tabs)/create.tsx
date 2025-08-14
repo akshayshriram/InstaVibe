@@ -11,10 +11,14 @@ import {
   Platform,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 
+import { api } from "@/convex/_generated/api";
+import { useMutation } from "convex/react";
+import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 
 export default function Create() {
@@ -35,7 +39,39 @@ export default function Create() {
     if (!result.canceled) setSelectedImage(result.assets[0].uri);
   };
 
-  console.log(selectedImage);
+  const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
+  const createPost = useMutation(api.posts.createPost);
+
+  const handleShare = async () => {
+    if (!selectedImage) return;
+
+    try {
+      setIsSharing(true);
+      const uploadUrl = await generateUploadUrl();
+
+      const UploadResult = await FileSystem.uploadAsync(
+        uploadUrl,
+        selectedImage,
+        {
+          httpMethod: "POST",
+          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+          mimeType: "image/jpeg",
+        }
+      );
+
+      if (UploadResult.status !== 200) throw new Error("Upload Failed");
+
+      const { storageId } = JSON.parse(UploadResult.body);
+
+      await createPost({ storageId, caption });
+
+      router.push("/(tabs)");
+    } catch (error) {
+      console.error("Error While Uploading Post:", error);
+    } finally {
+      setIsSharing(false);
+    }
+  };
 
   if (!selectedImage) {
     return (
@@ -62,7 +98,7 @@ export default function Create() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 40}
     >
       <View style={styles.contentContainer}>
         {/* header */}
@@ -87,7 +123,7 @@ export default function Create() {
               styles.shareButton,
               isSharing && styles.shareButtonDisabled,
             ]}
-            // onPress={handleShare}
+            onPress={handleShare}
           >
             {isSharing ? (
               <ActivityIndicator size="small" color={COLORS.primary} />
@@ -99,25 +135,49 @@ export default function Create() {
 
         {/* ScrollView */}
         <ScrollView
-          contentContainerStyle={styles.container}
+          contentContainerStyle={styles.scrollContent}
           bounces={false}
           keyboardShouldPersistTaps="handled"
+          contentOffset={{ x: 0, y: 100 }}
         >
           <View style={[styles.content, isSharing && styles.contentDisabled]}>
-            <Image
-              source={selectedImage}
-              style={styles.previewImage}
-              contentFit="contain"
-              transition={200}
-            />
-            <TouchableOpacity
-              style={styles.changeImageButton}
-              onPress={pickImage}
-              disabled={isSharing}
-            >
-              <Ionicons name="image-outline" size={20} color={COLORS.white} />
-              <Text style={styles.changeImageText}>Change</Text>
-            </TouchableOpacity>
+            {/* Image Section */}
+            <View style={styles.imageSection}>
+              <Image
+                source={selectedImage}
+                style={styles.previewImage}
+                contentFit="contain"
+                transition={200}
+              />
+              <TouchableOpacity
+                style={styles.changeImageButton}
+                onPress={pickImage}
+                disabled={isSharing}
+              >
+                <Ionicons name="image-outline" size={20} color={COLORS.white} />
+                <Text style={styles.changeImageText}>Change</Text>
+              </TouchableOpacity>
+            </View>
+            {/* INput Section */}
+            <View style={styles.inputSection}>
+              <View style={styles.captionContainer}>
+                <Image
+                  source={user?.imageUrl}
+                  style={styles.userAvatar}
+                  contentFit="cover"
+                  transition={200}
+                />
+                <TextInput
+                  style={styles.captionInput}
+                  placeholder="Write a Caption..."
+                  placeholderTextColor={COLORS.grey}
+                  multiline
+                  value={caption}
+                  onChangeText={setCaption}
+                  editable={!isSharing}
+                />
+              </View>
+            </View>
           </View>
         </ScrollView>
       </View>
