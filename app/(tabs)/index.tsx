@@ -1,35 +1,34 @@
-import { styles } from "@/styles/auth.styles";
+import Story from "@/components/Story";
+import { STORIES } from "@/constants/mock-data";
+import { COLORS } from "@/constants/theme";
+import { styles } from "@/styles/feed.styles";
 import { useAuth } from "@clerk/clerk-expo";
-import { Link } from "expo-router";
-import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 export default function Index() {
   const { signOut } = useAuth();
 
   return (
     <View style={styles.container}>
-      <Text style={{ color: "white" }}>Hello World</Text>
-      <TouchableOpacity onPress={() => alert("Clicked")}>
-        <Text>Click me</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => signOut()}>
-        <Text style={{ color: "white" }}>SignOut</Text>
-      </TouchableOpacity>
-      <Pressable onPress={() => alert("Press me")}>
-        <Text>Press me</Text>
-      </Pressable>
-      <Image
-        source={require("@/assets/images/react-logo.png")}
-        style={{ width: 100, height: 100 }}
-      />
-      <Image
-        source={{
-          uri: "https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&w=1331&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        }}
-        style={{ width: 400, height: 400, resizeMode: "contain" }}
-      />
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>InstaVibe</Text>
+        <TouchableOpacity onPress={() => signOut()}>
+          <Ionicons name="log-out-outline" size={24} color={COLORS.white} />
+        </TouchableOpacity>
+      </View>
 
-      <Link href="/profile">Profile</Link>
-      <Link href="/notification">Notification</Link>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.storiesContainer}
+        >
+          {STORIES.map((story) => (
+            <Story key={story.id} story={story} />
+          ))}
+        </ScrollView>
+      </ScrollView>
     </View>
   );
 }
