@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { getAuthenticatedUser } from "./users";
 
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -15,7 +15,7 @@ export const createPost = mutation({
     },
     handler: async (ctx, args) => {
 
-        const currentUser = await getAuthenticatedUser(ctx)
+        const currentUser = await getAuthenticatedUser(ctx);
 
         const imageUrl = await ctx.storage.getUrl(args.storageId);
         if (!imageUrl) throw new Error("Image Not Found");
@@ -47,11 +47,12 @@ export const getFeedPosts = query({
         // Get All Posts
         const posts = await ctx.db.query("posts").order("desc").collect()
 
+        console.log(posts)
         if (posts.length === 0) return []
 
         const postsWithInfo = await Promise.all(
             posts.map(async (post) => {
-                const postAuthor = await ctx.db.get(post.userId)
+                const postAuthor = await ctx.db.get(post?.userId)
                 const like = await ctx.db.query("likes")
                     .withIndex("by_user_and_post", (q) => q.eq("userId", currentUser._id).eq("postId", post._id)).first()
                 const bookmark = await ctx.db.query("bookmarks")
@@ -60,7 +61,7 @@ export const getFeedPosts = query({
                 return {
                     ...post,
                     authorInfo: {
-                        _id: postAuthor._id,
+                        _id: postAuthor?._id,
                         username: postAuthor?.username,
                         image: postAuthor?.image
                     },

@@ -43,4 +43,6 @@ export async function getAuthenticatedUser(ctx: QueryCtx | MutationCtx) {
         .first()
 
     if (!currentUser) throw new Error("User not found");
+
+    return currentUser;
 }
