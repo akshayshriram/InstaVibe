@@ -1,12 +1,47 @@
 import { COLORS } from "@/constants/theme";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { styles } from "@/styles/feed.styles";
 import { Ionicons } from "@expo/vector-icons";
+import { useMutation } from "convex/react";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-export default function Post({ post }: { post: any }) {
+type PostProps = {
+  _id: Id<"posts">;
+  imageUrl: string;
+  caption?: string;
+  likes: number;
+  Comments: number;
+  _creationTime: number;
+  isLiked: boolean;
+  isBookmarked: boolean;
+  author: {
+    _id: Id<"users">;
+    username: string;
+    image: string;
+  };
+};
+
+export default function Post({ post }: { post: PostProps }) {
+  const [isLiked, setIsLiked] = useState(post.isLiked);
+  const [likesCount, setLikesCount] = useState(post.likes);
+
+  const toggleLike = useMutation(api.posts.toggleLike);
+
+  const handleLike = async () => {
+    try {
+      const newIsLiked = await toggleLike({ postId: post._id });
+      setIsLiked(newIsLiked);
+
+      setLikesCount((prev) => (newIsLiked ? prev + 1 : prev - 1));
+    } catch (error) {
+      console.error("Error while clicking Like", error);
+    }
+  };
+
   return (
     <View style={styles.post}>
       {/* Post Header */}
@@ -15,13 +50,13 @@ export default function Post({ post }: { post: any }) {
         <Link href={"/(tabs)/notification"}>
           <TouchableOpacity style={styles.postHeaderLeft}>
             <Image
-              source={post.authorInfo.image}
+              source={post.author.image}
               style={styles.postAvatar}
               contentFit="cover"
               transition={200}
               cachePolicy={"memory-disk"}
             />
-            <Text style={styles.postUsername}>{post.authorInfo.username}</Text>
+            <Text style={styles.postUsername}>{post.author.username}</Text>
           </TouchableOpacity>
         </Link>
         {/* SHow a delete button  */}
@@ -54,15 +89,13 @@ export default function Post({ post }: { post: any }) {
 
       <View style={styles.postActions}>
         <View style={styles.postActionsLeft}>
-          <TouchableOpacity
-          // onPress={handleLike}
-          >
+          <TouchableOpacity onPress={handleLike}>
             <Ionicons
-              // name={isLiked ? "heart" : "heart-outline"}
-              name={"heart-outline"}
+              name={isLiked ? "heart" : "heart-outline"}
+              // name={"heart-outline"}
               size={24}
-              // color={isLiked ? COLORS.primary : COLORS.white}
-              color={COLORS.white}
+              color={isLiked ? COLORS.primary : COLORS.white}
+              // color={COLORS.white}
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -90,9 +123,9 @@ export default function Post({ post }: { post: any }) {
       {/* POST INFO */}
       <View style={styles.postInfo}>
         <Text style={styles.likesText}>
-          {post.likes > 0
-            ? `${post.likes.toLocaleString()} likes`
-            : "Be the first to like         Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae a deserunt, nobis repellendus neque quos itaque? Commodi dolorem, eligendi adipisci reprehenderit officiis quidem vel et perferendis sequi eveniet, deleniti odio aliquam! Consectetur deleniti veritatis distinctio eaque maxime reprehenderit quaerat ipsam."}
+          {likesCount > 0
+            ? `${likesCount.toLocaleString()} likes`
+            : "Be the first to like"}
         </Text>
         {post.caption && (
           <View style={styles.captionContainer}>
@@ -103,12 +136,12 @@ export default function Post({ post }: { post: any }) {
           </View>
         )}
 
-        {post.comments > 0 && (
+        {post.Comments > 0 && (
           <TouchableOpacity
           // onPress={() => setShowComments(true)}
           >
             <Text style={styles.commentsText}>
-              View all {post.comments} comments
+              View all {post.Comments} comments
             </Text>
           </TouchableOpacity>
         )}
