@@ -15,8 +15,6 @@ export default function Index() {
 
   if (posts === undefined) return <Loader />;
 
-  console.log(posts);
-
   return (
     <View style={styles.container}>
       {/* Header */}

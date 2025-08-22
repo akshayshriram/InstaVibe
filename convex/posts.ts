@@ -47,7 +47,6 @@ export const getFeedPosts = query({
         // Get All Posts
         const posts = await ctx.db.query("posts").order("desc").collect()
 
-        console.log(posts)
         if (posts.length === 0) return []
 
         const postsWithInfo = await Promise.all(
