@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthenticatedUser } from "./users";
 
@@ -117,5 +117,58 @@ export const toggleLike = mutation({
             }
             return true //This is now liked
         }
+    }
+})
+
+export const deletPost = mutation({
+    args: {
+        postId: v.id("posts")
+    },
+    handler: async (ctx, args) => {
+        const currentUser = await getAuthenticatedUser(ctx)
+
+        const post = await ctx.db.get(args.postId)
+        if (!post) throw new ConvexError("Post Not Found")
+
+        // Verify ownership
+        if (post.userId !== currentUser._id) throw new Error("Not Authorized to delete this post.")
+
+        // delete associated links
+        const likes = await ctx.db.query("likes")
+            .withIndex("by_post", q => q.eq("postId", args.postId))
+            .collect()
+
+        for (const like of likes) {
+            await ctx.db.delete(like._id)
+        }
+
+        // delete assocaited comments
+        const comments = await ctx.db.query("comments")
+            .withIndex("by_post", q => q.eq("postId", args.postId))
+            .collect()
+
+        for (const comment of comments) {
+            await ctx.db.delete(comment._id)
+        }
+
+        // delete associated bookmark
+        const bookmarks = await ctx.db.query("bookmarks")
+            .withIndex("by_post", q => q.eq("postId", args.postId))
+            .collect()
+
+        for (const bookmark of bookmarks) {
+            await ctx.db.delete(bookmark._id)
+        }
+
+
+        // Delete the Image 
+        await ctx.storage.delete(post.storageId)
+
+        // Delete the post 
+
+        await ctx.db.delete(post._id)
+
+        await ctx.db.patch(currentUser._id, { posts: Math.max(0, (currentUser.posts || 1) - 1) })
+
     }
 })
