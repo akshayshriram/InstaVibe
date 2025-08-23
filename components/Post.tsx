@@ -3,7 +3,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { styles } from "@/styles/feed.styles";
 import { Ionicons } from "@expo/vector-icons";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { formatDistanceToNow } from "date-fns";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
@@ -36,6 +36,7 @@ export default function Post({ post }: { post: PostProps }) {
 
   const toggleLike = useMutation(api.posts.toggleLike);
   const toggleBookMark = useMutation(api.bookmarks.toogleBookmark);
+  const comments = useQuery(api.comments.getComments, { postId: post._id });
 
   const handleLike = async () => {
     try {
@@ -145,6 +146,28 @@ export default function Post({ post }: { post: PostProps }) {
           </View>
         )}
 
+        {comments &&
+          comments.length > 0 &&
+          comments.slice(0, 2).map((comment) => (
+            <View
+              style={{
+                flexDirection: "row",
+                marginBottom: 4,
+              }}
+              key={comment._id}
+            >
+              <Text style={[styles.commentUsername, { marginRight: 8 }]}>
+                {comment.user.fullname}
+              </Text>
+              <Text
+                style={[styles.commentText, { flex: 1 }]}
+                numberOfLines={2}
+                ellipsizeMode="tail"
+              >
+                {comment.content}
+              </Text>
+            </View>
+          ))}
         {commentsCount > 0 && (
           <TouchableOpacity onPress={() => setShowComments(true)}>
             <Text style={styles.commentsText}>
