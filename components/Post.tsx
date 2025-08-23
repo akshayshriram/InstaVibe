@@ -162,8 +162,11 @@ export default function Post({ post }: { post: PostProps }) {
         </Text>
         {post.caption && (
           <View style={styles.captionContainer}>
-            <Text style={styles.captionUsername}>{post.author.username}</Text>
-            <Text style={styles.captionText}>{post.caption}</Text>
+            {/* <Text style={styles.captionUsername}>{post.author.username}</Text> */}
+            <Text style={styles.captionText}>
+              <Text style={styles.captionUsername}>{post.author.username}</Text>{" "}
+              {post.caption}
+            </Text>
           </View>
         )}
 
@@ -185,7 +188,10 @@ export default function Post({ post }: { post: PostProps }) {
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {comment.user.fullname} &nbsp;{comment.content}
+                <Text style={styles.captionUsername}>
+                  {comment.user.fullname}
+                </Text>{" "}
+                {comment.content}
               </Text>
             </View>
           ))}

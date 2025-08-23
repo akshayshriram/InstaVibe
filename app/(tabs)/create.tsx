@@ -64,6 +64,8 @@ export default function Create() {
       const { storageId } = JSON.parse(UploadResult.body);
 
       await createPost({ storageId, caption });
+      setSelectedImage(null);
+      setCaption("");
 
       router.push("/(tabs)");
     } catch (error) {
