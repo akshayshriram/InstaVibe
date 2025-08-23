@@ -25,6 +25,7 @@ export const createPost = mutation({
             userId: currentUser._id,
             imageUrl,
             storageId: args.storageId,
+            caption: args.caption,
             likes: 0,
             Comments: 0
         })
