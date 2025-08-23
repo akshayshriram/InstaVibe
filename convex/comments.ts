@@ -24,7 +24,7 @@ export const addComment = mutation({
 
         await ctx.db.patch(args.postId, { Comments: post.Comments + 1 })
 
-        if (post.userId != currentUser._id) {
+        if (post.userId !== currentUser._id) {
             await ctx.db.insert("notificatons", {
                 receiverId: post.userId,
                 senderId: currentUser._id,
