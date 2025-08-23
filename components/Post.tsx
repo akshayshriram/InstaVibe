@@ -151,20 +151,20 @@ export default function Post({ post }: { post: PostProps }) {
           comments.slice(0, 2).map((comment) => (
             <View
               style={{
-                flexDirection: "row",
+                // flexDirection: "row",
                 marginBottom: 4,
               }}
               key={comment._id}
             >
-              <Text style={[styles.commentUsername, { marginRight: 8 }]}>
+              {/* <Text style={[styles.commentUsername, { marginRight: 8 }]}>
                 {comment.user.fullname}
-              </Text>
+              </Text> */}
               <Text
                 style={[styles.commentText, { flex: 1 }]}
-                numberOfLines={2}
+                numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {comment.content}
+                {comment.user.fullname} &nbsp;{comment.content}
               </Text>
             </View>
           ))}
