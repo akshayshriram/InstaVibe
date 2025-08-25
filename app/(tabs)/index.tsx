@@ -1,4 +1,5 @@
 import { Loader } from "@/components/Loader";
+import NoPostsFound from "@/components/NoPostsFound";
 import Post from "@/components/Post";
 import StoriesSection from "@/components/StoriesSection";
 import { COLORS } from "@/constants/theme";
@@ -14,6 +15,8 @@ export default function Index() {
   const posts = useQuery(api.posts.getFeedPosts);
 
   if (posts === undefined) return <Loader />;
+
+  if (posts.length === 0) return <NoPostsFound content="Posts" />;
 
   return (
     <View style={styles.container}>

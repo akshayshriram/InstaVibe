@@ -2,7 +2,11 @@ import { COLORS } from "@/constants/theme";
 import React from "react";
 import { Text, View } from "react-native";
 
-export default function NoPostsFound() {
+interface NoPostsFoundProps {
+  content: string;
+}
+
+export default function NoPostsFound({ content }: NoPostsFoundProps) {
   return (
     <View
       style={{
@@ -12,7 +16,9 @@ export default function NoPostsFound() {
         alignItems: "center",
       }}
     >
-      <Text style={{ fontSize: 20, color: COLORS.primary }}>No posts yet</Text>
+      <Text style={{ fontSize: 20, color: COLORS.primary }}>
+        No {content} yet
+      </Text>
     </View>
   );
 }
