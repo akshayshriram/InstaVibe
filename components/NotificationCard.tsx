@@ -5,9 +5,9 @@ import { formatDistanceToNow } from "date-fns";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
-export default function Notification({ notification }: any) {
+export default function NotificationCard({ notification }: any) {
   console.log(notification);
 
   return (
@@ -45,7 +45,7 @@ export default function Notification({ notification }: any) {
               ? "started following you"
               : notification.type === "like"
                 ? "liked your post"
-                : `commented:"${notification.content}"`}
+                : `commented:"${notification.comment}"`}
           </Text>
           <Text style={styles.timeAgo}>
             {formatDistanceToNow(notification._creationTime, {
@@ -54,6 +54,15 @@ export default function Notification({ notification }: any) {
           </Text>
         </View>
       </View>
+
+      {notification.post && (
+        <Image
+          source={notification.post.imageUrl}
+          style={styles.postImage}
+          contentFit="cover"
+          transition={200}
+        />
+      )}
     </View>
   );
 }

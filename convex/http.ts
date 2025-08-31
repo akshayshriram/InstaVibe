@@ -45,7 +45,7 @@ http.route({
         }
 
         const eventType = evt.type;
-        if (eventType == 'user.created') {
+        if (eventType === 'user.created') {
             const { id, email_addresses, first_name, last_name, image_url } = evt.data;
 
             const email = email_addresses[0].email_address;
