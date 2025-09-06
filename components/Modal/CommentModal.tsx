@@ -15,8 +15,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Comment from "./Comment";
-import { Loader } from "./Loader";
+import Comment from "../Comment";
+import { Loader } from "../Loader";
 
 type CommentsModal = {
   postId: Id<"posts">;

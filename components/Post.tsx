@@ -10,9 +10,9 @@ import { Image } from "expo-image";
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import CommentModal from "./CommentModal";
+import CommentModal from "./Modal/CommentModal";
 
-type PostProps = {
+export type PostProps = {
   _id: Id<"posts">;
   imageUrl: string;
   caption?: string;
