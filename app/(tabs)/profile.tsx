@@ -77,6 +77,7 @@ export default function Profile() {
                 style={styles.avatar}
                 contentFit="cover"
                 transition={200}
+                cachePolicy={"memory-disk"}
               />
             </View>
             <View style={styles.statsContainer}>
