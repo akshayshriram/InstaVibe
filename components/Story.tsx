@@ -3,14 +3,14 @@ import { Image } from "expo-image";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-type Story = {
+type StoryType = {
   id: string;
   username: string;
   avatar: string;
   hasStory: boolean;
 };
 
-export default function Story({ story }: { story: Story }) {
+export default function Story({ story }: { story: StoryType }) {
   return (
     <TouchableOpacity style={styles.storyWrapper}>
       <View style={[styles.storyRing, !story.hasStory && styles.noStory]}>

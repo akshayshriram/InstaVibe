@@ -8,8 +8,15 @@ import { styles } from "@/styles/feed.styles";
 import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "convex/react";
+import { useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function Index() {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const insets = useSafeAreaInsets();
+  const HEADER_HEIGHT = 56; // match styles.header height
+
   const { signOut } = useAuth();
 
   const posts = useQuery(api.posts.getFeedPosts);
@@ -17,6 +24,13 @@ export default function Index() {
   if (posts === undefined) return <Loader />;
 
   if (posts.length === 0) return <NoPostsFound content="Posts" />;
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
 
   return (
     <View style={styles.container}>
@@ -34,6 +48,10 @@ export default function Index() {
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={<StoriesSection />}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        progressViewOffset={HEADER_HEIGHT + insets.top}
+        contentContainerStyle={{ paddingBottom: 16 }}
       />
     </View>
   );

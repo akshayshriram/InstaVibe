@@ -31,8 +31,7 @@ export type PostProps = {
 export default function Post({ post }: { post: PostProps }) {
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
-  const [likesCount, setLikesCount] = useState(post.likes);
-  const [commentsCount, setCommentsCount] = useState(post.Comments);
+  // const [commentsCount, setCommentsCount] = useState(post.Comments);
   const [showComments, setShowComments] = useState(false);
 
   const { user } = useUser();
@@ -51,8 +50,6 @@ export default function Post({ post }: { post: PostProps }) {
     try {
       const newIsLiked = await toggleLike({ postId: post._id });
       setIsLiked(newIsLiked);
-
-      setLikesCount((prev) => (newIsLiked ? prev + 1 : prev - 1));
     } catch (error) {
       console.error("Error while clicking Like", error);
     }
@@ -156,8 +153,8 @@ export default function Post({ post }: { post: PostProps }) {
       {/* POST INFO */}
       <View style={styles.postInfo}>
         <Text style={styles.likesText}>
-          {likesCount > 0
-            ? `${likesCount.toLocaleString()} likes`
+          {post.likes > 0
+            ? `${post.likes.toLocaleString()} likes`
             : "Be the first to like"}
         </Text>
         {post.caption && (
@@ -180,9 +177,6 @@ export default function Post({ post }: { post: PostProps }) {
               }}
               key={comment._id}
             >
-              {/* <Text style={[styles.commentUsername, { marginRight: 8 }]}>
-                {comment.user.fullname}
-              </Text> */}
               <Text
                 style={[styles.commentText, { flex: 1 }]}
                 numberOfLines={1}
@@ -195,10 +189,10 @@ export default function Post({ post }: { post: PostProps }) {
               </Text>
             </View>
           ))}
-        {commentsCount > 0 && (
+        {post.Comments > 0 && (
           <TouchableOpacity onPress={() => setShowComments(true)}>
             <Text style={styles.commentsText}>
-              View all {commentsCount} comments
+              View all {post.Comments} comments
             </Text>
           </TouchableOpacity>
         )}
@@ -215,7 +209,6 @@ export default function Post({ post }: { post: PostProps }) {
         postId={post._id}
         visible={showComments}
         onClose={() => setShowComments(false)}
-        onCommentAdded={() => setCommentsCount((prev) => prev + 1)}
       />
     </View>
   );

@@ -22,14 +22,12 @@ type CommentsModal = {
   postId: Id<"posts">;
   visible: boolean;
   onClose: () => void;
-  onCommentAdded: () => void;
 };
 
 export default function CommentModal({
   postId,
   visible,
   onClose,
-  onCommentAdded,
 }: CommentsModal) {
   const [newComment, setNewComment] = useState("");
   const comments = useQuery(api.comments.getComments, { postId });
@@ -44,7 +42,6 @@ export default function CommentModal({
       });
 
       setNewComment("");
-      onCommentAdded();
     } catch (error) {
       console.error("Error While commenting:", error);
     }

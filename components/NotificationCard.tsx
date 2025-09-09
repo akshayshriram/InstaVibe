@@ -37,7 +37,13 @@ export default function NotificationCard({ notification }: any) {
           </TouchableOpacity>
         </Link>
         <View style={styles.notificationInfo}>
-          <Link href={`/(tabs)/notification`}>
+          <Link
+            href={{
+              pathname: "/user/[id]",
+              params: { id: String(notification.sender._id) },
+            }}
+            asChild
+          >
             <TouchableOpacity>
               <Text style={styles.username}>
                 {notification.sender.username}
