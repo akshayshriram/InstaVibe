@@ -21,6 +21,7 @@ export type PostProps = {
   _creationTime: number;
   isLiked: boolean;
   isBookmarked: boolean;
+  userId: Id<"users">;
   author: {
     _id: Id<"users">;
     username: string;
@@ -40,6 +41,8 @@ export default function Post({ post }: { post: PostProps }) {
     api.users.getUserByClerkID,
     user ? { clerkId: user?.id } : "skip"
   );
+
+  console.log("Post Id", post.userId);
 
   const toggleLike = useMutation(api.posts.toggleLike);
   const toggleBookMark = useMutation(api.bookmarks.toogleBookmark);
@@ -77,7 +80,13 @@ export default function Post({ post }: { post: PostProps }) {
       {/* Post Header */}
 
       <View style={styles.postHeader}>
-        <Link href={"/(tabs)/notification"}>
+        <Link
+          href={{
+            pathname: "/user/[id]",
+            params: { id: String(post.userId) },
+          }}
+          asChild
+        >
           <TouchableOpacity style={styles.postHeaderLeft}>
             <Image
               source={post.author.image}
