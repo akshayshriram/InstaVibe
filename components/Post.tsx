@@ -42,8 +42,6 @@ export default function Post({ post }: { post: PostProps }) {
     user ? { clerkId: user?.id } : "skip"
   );
 
-  console.log("Post Id", post.userId);
-
   const toggleLike = useMutation(api.posts.toggleLike);
   const toggleBookMark = useMutation(api.bookmarks.toogleBookmark);
   const comments = useQuery(api.comments.getComments, { postId: post._id });

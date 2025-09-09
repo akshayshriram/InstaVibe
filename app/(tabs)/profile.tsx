@@ -1,6 +1,7 @@
 import { Loader } from "@/components/Loader";
 import EditProfileModal from "@/components/Modal/EditProfileModal";
 import SelectedProfileModal from "@/components/Modal/SelectedProfileModal";
+import UpdateModal from "@/components/Modal/UpdateModal";
 import NoPostsFound from "@/components/NoPostsFound";
 import { COLORS } from "@/constants/theme";
 import { api } from "@/convex/_generated/api";
@@ -22,6 +23,7 @@ import {
 export default function Profile() {
   const { signOut, userId } = useAuth();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
 
   const currentUser = useQuery(
     api.users.getUserByClerkID,
@@ -106,7 +108,11 @@ export default function Profile() {
             >
               <Text style={styles.editButtonText}>Edit Profile</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.shareButton}>
+
+            <TouchableOpacity
+              style={styles.shareButton}
+              onPress={() => setIsUpdateModalVisible(true)}
+            >
               <Ionicons name="share-outline" size={24} color={COLORS.white} />
             </TouchableOpacity>
           </View>
@@ -142,6 +148,11 @@ export default function Profile() {
         handleSaveProfle={handleSaveProfle}
         editedProfile={editedProfile}
         setEditedProfile={setEditedProfile}
+      />
+
+      <UpdateModal
+        isUpdateModalVisible={isUpdateModalVisible}
+        setIsUpdateModalVisible={setIsUpdateModalVisible}
       />
 
       {/* Show Selected Post */}
