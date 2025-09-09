@@ -37,8 +37,8 @@ export default defineSchema({
     }).index("by_post", ["postId"]),
 
     follows: defineTable({
-        followerId: v.string(),
-        followingId: v.string(),
+        followerId: v.id("users"),
+        followingId: v.id("users"),
     })
         .index("by_follower", ["followerId"])
         .index("by_following", ["followingId"])
@@ -49,10 +49,12 @@ export default defineSchema({
         senderId: v.id("users"),
         type: v.union(v.literal("like"), v.literal("comment"), v.literal("follow")),
         postId: v.optional(v.id("posts")),
+        userId: v.optional(v.id("users")),
         commentId: v.optional(v.id("comments")),
     })
         .index("by_receiver", ["receiverId"])
-        .index("by_post", ["postId"]),
+        .index("by_post", ["postId"])
+        .index("by_receiver_sender_type", ["receiverId", "senderId", "type"]),
 
     bookmarks: defineTable({
         userId: v.id("users"),

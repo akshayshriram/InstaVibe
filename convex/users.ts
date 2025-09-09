@@ -111,6 +111,24 @@ export const toggleFollow = mutation({
         if (existing) {
             // Unfollow
             await ctx.db.delete(existing._id);
+
+            // delete the specific follow notification from current user to the target
+            const followNotification = await ctx.db
+                .query("notificatons")
+                .withIndex(
+                    "by_receiver_sender_type",
+                    (q) =>
+                        q
+                            .eq("receiverId", args.followingId)
+                            .eq("senderId", currentUser._id)
+                            .eq("type", "follow")
+                )
+                .first();
+
+            if (followNotification) {
+                await ctx.db.delete(followNotification._id);
+            }
+
             await updateFollowCounts(ctx, currentUser._id, args.followingId, false)
         } else {
             // Follow

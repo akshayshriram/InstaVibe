@@ -11,7 +11,13 @@ export default function NotificationCard({ notification }: any) {
   return (
     <View style={styles.notificationItem}>
       <View style={styles.notificationContent}>
-        <Link href={`/user/${notification.sender._id}`} asChild>
+        <Link
+          href={{
+            pathname: "/user/[id]",
+            params: { id: String(notification.sender._id) },
+          }}
+          asChild
+        >
           <TouchableOpacity style={styles.avatarContainer}>
             <Image
               source={notification.sender.image}
