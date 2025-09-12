@@ -29,7 +29,13 @@ export type PostProps = {
   };
 };
 
-export default function Post({ post }: { post: PostProps }) {
+export default function Post({
+  post,
+  setIsUpdateModalVisible,
+}: {
+  post: PostProps;
+  setIsUpdateModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
   // const [commentsCount, setCommentsCount] = useState(post.Comments);
@@ -107,7 +113,7 @@ export default function Post({ post }: { post: PostProps }) {
             ></Ionicons>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setIsUpdateModalVisible(true)}>
             <Ionicons
               name="ellipsis-horizontal"
               size={20}

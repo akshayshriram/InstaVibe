@@ -10,9 +10,18 @@ type StoryType = {
   hasStory: boolean;
 };
 
-export default function Story({ story }: { story: StoryType }) {
+export default function Story({
+  story,
+  setIsUpdateModalVisible,
+}: {
+  story: StoryType;
+  setIsUpdateModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
-    <TouchableOpacity style={styles.storyWrapper}>
+    <TouchableOpacity
+      style={styles.storyWrapper}
+      onPress={() => setIsUpdateModalVisible(true)}
+    >
       <View style={[styles.storyRing, !story.hasStory && styles.noStory]}>
         <Image source={{ uri: story.avatar }} style={styles.storyAvatar} />
       </View>

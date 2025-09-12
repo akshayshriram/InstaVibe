@@ -11,8 +11,10 @@ import { useQuery } from "convex/react";
 import { useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import UpdateModal from "@/components/Modal/UpdateModal";
 export default function Index() {
   const [refreshing, setRefreshing] = useState(false);
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
 
   const insets = useSafeAreaInsets();
   const HEADER_HEIGHT = 56; // match styles.header height
@@ -44,7 +46,9 @@ export default function Index() {
 
       <FlatList
         data={posts}
-        renderItem={({ item }) => <Post post={item} />}
+        renderItem={({ item }) => (
+          <Post post={item} setIsUpdateModalVisible={setIsUpdateModalVisible} />
+        )}
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={<StoriesSection />}
@@ -52,6 +56,11 @@ export default function Index() {
         onRefresh={onRefresh}
         progressViewOffset={HEADER_HEIGHT + insets.top}
         contentContainerStyle={{ paddingBottom: 16 }}
+      />
+
+      <UpdateModal
+        isUpdateModalVisible={isUpdateModalVisible}
+        setIsUpdateModalVisible={setIsUpdateModalVisible}
       />
     </View>
   );

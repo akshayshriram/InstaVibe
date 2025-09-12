@@ -138,6 +138,12 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "600",
     },
+    modalText: {
+        color: COLORS.white,
+        fontSize: 14,
+        fontWeight: "600",
+        marginBottom: 14
+    },
     inputContainer: {
         marginBottom: 20,
     },
