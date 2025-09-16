@@ -18,8 +18,11 @@ import {
 
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import { Image } from "expo-image";
+
+// Platform-agnostic upload type (0 = binary content)
+const BINARY_CONTENT = 0;
 
 export default function Create() {
   const router = useRouter();
@@ -54,7 +57,7 @@ export default function Create() {
         selectedImage,
         {
           httpMethod: "POST",
-          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+          uploadType: BINARY_CONTENT,
           mimeType: "image/jpeg",
         }
       );

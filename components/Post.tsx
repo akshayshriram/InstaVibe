@@ -11,6 +11,7 @@ import { Link } from "expo-router";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import CommentModal from "./Modal/CommentModal";
+import DeletePostModal from "./Modal/DeletePostModal";
 
 export type PostProps = {
   _id: Id<"posts">;
@@ -40,6 +41,7 @@ export default function Post({
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
   // const [commentsCount, setCommentsCount] = useState(post.Comments);
   const [showComments, setShowComments] = useState(false);
+  const [isDeletePostModalVisible, setIsDeletePostModalVisible] = useState(false);
 
   const { user } = useUser();
 
@@ -105,7 +107,8 @@ export default function Post({
         {/* If the Clerk user is the owner of the post show the delete button  */}
 
         {post.author._id === currentuser?._id ? (
-          <TouchableOpacity onPress={handleDelete}>
+          <TouchableOpacity onPress={() => setIsDeletePostModalVisible(true)}>
+            {/* <TouchableOpacity onPress={handleDelete}> */}
             <Ionicons
               name="trash-outline"
               size={20}
@@ -142,7 +145,7 @@ export default function Post({
               // name={"heart-outline"}
               size={24}
               color={isLiked ? COLORS.primary : COLORS.white}
-              // color={COLORS.white}
+            // color={COLORS.white}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setShowComments(true)}>
@@ -222,6 +225,12 @@ export default function Post({
         postId={post._id}
         visible={showComments}
         onClose={() => setShowComments(false)}
+      />
+      <DeletePostModal
+        isDeletePostModalVisible={isDeletePostModalVisible}
+        setIsDeletePostModalVisible={setIsDeletePostModalVisible}
+        handleDelete={handleDelete}
+        postImageUrl={post.imageUrl}
       />
     </View>
   );
